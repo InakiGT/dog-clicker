@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Clicker</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Dog Clicker</h1>
+    <ul>
+        <li th:each="dog : ${dogs.dogs}">
+            <a th:href="@{/dog(id=${dog.id})}" th:text="${dog.name}"></a>
+        </li>
+    </ul>
+    <section>
+        <div>
+            <h2 th:text="${dogs.dog.name}"></h2>
+            <p id="1">Count: <span id="count" th:text="${dogs.dog.count}"></span></p>
+        </div>
+        <button id="button">
+            <img th:src="${dogs.dog.img}" />
+        </button> 
+    </section>
+
+    <a><img src="" /></a>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 20px;
+        }
+
+        a:hover {
+            color:  rgba(0, 0, 0, 1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0!important;
+        }
+
+        img {
+            width: 50%;
+            max-height: 600px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none
+        }
+    </style>
+    <script>
+        const id = document.location.search.substring(1).split('=')[1];
+
+        const button = document.getElementById('button');
+        const counter = document.getElementById('count');
+
+
+        button.addEventListener('click', e => {
+            e.preventDefault();
+
+            let count = parseInt(counter.textContent)
+            counter.textContent = ++count;
+
+            fetch(`/dog?id=${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    count: count,
+                }),
+            });
+        });
+    </script>
+</body>
+</html>
